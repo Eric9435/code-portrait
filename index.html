@@ -3,88 +3,97 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ASCII Portrait</title>
+<title>ASCII Portrait Upload</title>
 
 <style>
 body{
   margin:0;
   background:black;
   display:flex;
-  justify-content:center;
+  flex-direction:column;
   align-items:center;
+  justify-content:center;
   height:100vh;
   overflow:hidden;
+  font-family:monospace;
+}
+
+input{
+  margin-bottom:15px;
+  color:white;
 }
 
 pre{
-  font-family: monospace;
+  color:#00ff66;
   font-size:6px;
   line-height:6px;
-  letter-spacing:1px;
   white-space:pre;
-  color:#00ff88;
-  text-shadow:0 0 5px #00ff88;
+  text-shadow:0 0 4px #00ff66;
 }
 
-canvas{
-  display:none;
-}
+canvas{ display:none; }
 </style>
 </head>
-
 <body>
 
+<input type="file" id="upload" accept="image/*">
 <canvas id="canvas"></canvas>
-<pre id="ascii">Loading...</pre>
+<pre id="ascii">Choose an image...</pre>
 
 <script>
-const img = new Image();
-img.src = "photo.jpg";   // Make sure filename matches exactly
+const upload = document.getElementById("upload");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d", { willReadFrequently:true });
+const output = document.getElementById("ascii");
 
-img.onload = () => {
+upload.addEventListener("change", function(e){
 
-  const canvas = document.getElementById("canvas");
-  const ctx = canvas.getContext("2d", { willReadFrequently:true });
+  const file = e.target.files[0];
+  if(!file) return;
 
-  // SAFE resolution (won’t freeze browser)
-  const W = 160;
-  const H = 200;
+  const reader = new FileReader();
+  reader.onload = function(event){
 
-  canvas.width = W;
-  canvas.height = H;
+    const img = new Image();
+    img.src = event.target.result;
 
-  ctx.drawImage(img, 0, 0, W, H);
+    img.onload = function(){
 
-  const imageData = ctx.getImageData(0, 0, W, H);
-  const data = imageData.data;
+      const W = 170;
+      const H = Math.floor(W * (img.height/img.width) * 0.55);
 
-  const chars = "@%#*+=-:. ";
-  let output = [];
+      canvas.width = W;
+      canvas.height = H;
 
-  for(let y = 0; y < H; y++){
-    let row = "";
-    for(let x = 0; x < W; x++){
+      ctx.drawImage(img, 0, 0, W, H);
 
-      const i = (y * W + x) * 4;
-      const r = data[i];
-      const g = data[i+1];
-      const b = data[i+2];
+      const imageData = ctx.getImageData(0,0,W,H);
+      const data = imageData.data;
 
-      // brightness calculation
-      const brightness = (0.299*r + 0.587*g + 0.114*b) / 255;
+      const chars = " .,:;irsXA253hMHGS#9B&@";
+      let result = [];
 
-      const charIndex = Math.floor(brightness * (chars.length - 1));
-      row += chars[charIndex];
+      for(let y=0;y<H;y++){
+        let row="";
+        for(let x=0;x<W;x++){
+          const i = (y*W+x)*4;
+          const r=data[i], g=data[i+1], b=data[i+2];
+
+          let lum=(0.2126*r+0.7152*g+0.0722*b)/255;
+          lum=(lum-0.5)*1.6+0.5;   // contrast boost
+          lum=Math.max(0,Math.min(1,lum));
+
+          const idx=Math.floor((1-lum)*(chars.length-1));
+          row+=chars[idx];
+        }
+        result.push(row);
+      }
+
+      output.textContent=result.join("\n");
     }
-    output.push(row);
   }
-
-  document.getElementById("ascii").textContent = output.join("\n");
-};
-
-img.onerror = () => {
-  document.getElementById("ascii").textContent = "Image not found. Check filename.";
-};
+  reader.readAsDataURL(file);
+});
 </script>
 
 </body>
