@@ -40,6 +40,8 @@ p{
   /* IMPORTANT: transparency */
   color:transparent;
   -webkit-text-fill-color:transparent;
+
+  filter: contrst(1.6) brightness(0.8);
 }
 
 /* Fallback (if clip not supported) */
