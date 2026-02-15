@@ -15,19 +15,23 @@ section{
 }
 
 p{
-  font-size:0.8em;
-  line-height:0.55em;
-  letter-spacing:-0.08em;
-  max-width:1300px;
-  width:95%;
-  text-align:justify;
+  font-size: 0.6em;
+  line-height: 0.5em;
+  letter-spacing: -0.09em;
 
-  background:url(face.jpg);
-  background-size:cover;
-  background-position:center;
-  background-attachment:fixed;
+  max-width: 1400px;
+  width: 95%;
+  text-align: justify;
 
-  -webkit-background-clip:text;
-  background-clip:text;
-  color:transparent;
+  background-image: url("face.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  color: transparent;
+  -webkit-text-fill-color: transparent; /* IMPORTANT */
 }
