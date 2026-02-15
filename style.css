@@ -18,7 +18,8 @@ p{
   font-size:0.8em;
   line-height:0.55em;
   letter-spacing:-0.08em;
-  max-width:800px;
+  max-width:1300px;
+  width:95%;
   text-align:justify;
 
   background:url(face.jpg);
