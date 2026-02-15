@@ -1,100 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ASCII Portrait Upload</title>
-
-<style>
-body{
-  margin:0;
-  background:black;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  height:100vh;
-  overflow:hidden;
-  font-family:monospace;
-}
-
-input{
-  margin-bottom:15px;
-  color:white;
-}
-
-pre{
-  color:#00ff66;
-  font-size:6px;
-  line-height:6px;
-  white-space:pre;
-  text-shadow:0 0 4px #00ff66;
-}
-
-canvas{ display:none; }
-</style>
+  <meta charset="UTF-8">
+  <title>Text Portrait</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<input type="file" id="upload" accept="image/*">
-<canvas id="canvas"></canvas>
-<pre id="ascii">Choose an image...</pre>
-
-<script>
-const upload = document.getElementById("upload");
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d", { willReadFrequently:true });
-const output = document.getElementById("ascii");
-
-upload.addEventListener("change", function(e){
-
-  const file = e.target.files[0];
-  if(!file) return;
-
-  const reader = new FileReader();
-  reader.onload = function(event){
-
-    const img = new Image();
-    img.src = event.target.result;
-
-    img.onload = function(){
-
-      const W = 170;
-      const H = Math.floor(W * (img.height/img.width) * 0.55);
-
-      canvas.width = W;
-      canvas.height = H;
-
-      ctx.drawImage(img, 0, 0, W, H);
-
-      const imageData = ctx.getImageData(0,0,W,H);
-      const data = imageData.data;
-
-      const chars = " .,:;irsXA253hMHGS#9B&@";
-      let result = [];
-
-      for(let y=0;y<H;y++){
-        let row="";
-        for(let x=0;x<W;x++){
-          const i = (y*W+x)*4;
-          const r=data[i], g=data[i+1], b=data[i+2];
-
-          let lum=(0.2126*r+0.7152*g+0.0722*b)/255;
-          lum=(lum-0.5)*1.6+0.5;   // contrast boost
-          lum=Math.max(0,Math.min(1,lum));
-
-          const idx=Math.floor((1-lum)*(chars.length-1));
-          row+=chars[idx];
-        }
-        result.push(row);
-      }
-
-      output.textContent=result.join("\n");
-    }
-  }
-  reader.readAsDataURL(file);
-});
-</script>
+<section>
+  <p>
+    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+    Nobis saepe eum dolore at sint voluptates magni fuga nulla
+    consectetur? Sapiente, cum dolorem cupiditate sint nihil
+    natus ipsa atque consectetur.
+    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+    Nobis saepe eum dolore at sint voluptates magni fuga nulla
+    consectetur? Sapiente, cum dolorem cupiditate sint nihil
+    natus ipsa atque consectetur.
+    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+    Nobis saepe eum dolore at sint voluptates magni fuga nulla
+    consectetur?
+  </p>
+</section>
 
 </body>
 </html>
