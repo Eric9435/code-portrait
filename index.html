@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Text Portrait</title>
+  <title>Text Portrait Auto</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
 
@@ -12,7 +12,6 @@
     <p id="portrait"></p>
   </section>
 
-  <!-- hidden analyzer canvas -->
   <canvas id="an" style="display:none"></canvas>
 
   <script>
@@ -20,24 +19,25 @@
     const an = document.getElementById("an");
     const ax = an.getContext("2d", { willReadFrequently: true });
 
-    // 1) Auto-generate LOTS of text (so you don't paste huge text)
+    // ✅ 1) Auto text (adjust count if you want)
     const base = "Lorem ipsum dolor sit amet consectetur adipisicing elit. ";
     let big = "";
-    for (let i = 0; i < 10000; i++) big += base; // change 10000 if you want
+    for (let i = 0; i < 10000; i++) big += base;
     P.textContent = big;
 
-    // 2) Load image used in CSS (must match your style.css path/name)
+    // ✅ 2) Load image (must exist)
     const img = new Image();
     img.src = "./face.jpg";
 
     img.onload = () => {
-      // A) Auto aspect ratio (so dimensions are always correct)
+      // A) Auto aspect ratio so dimension is perfect
       P.style.aspectRatio = `${img.width} / ${img.height}`;
 
-      // B) Analyze average brightness (downsample for speed)
+      // B) Analyze brightness quickly (downsample)
       const W = 140;
       const H = Math.max(60, Math.round(W * (img.height / img.width)));
-      an.width = W; an.height = H;
+      an.width = W;
+      an.height = H;
 
       drawCover(ax, img, W, H);
       const { data } = ax.getImageData(0, 0, W, H);
@@ -50,24 +50,26 @@
       }
       const avgLum = sum / (data.length / 4); // 0..1
 
-      // C) Auto contrast/brightness (prevents "too white / washed out")
+      // C) Auto contrast & brightness (prevents "white wash")
       const contrast = clamp(1.35 + avgLum * 0.85, 1.3, 2.2);
       const brightness = clamp(0.95 - avgLum * 0.30, 0.65, 0.95);
       P.style.filter = `contrast(${contrast}) brightness(${brightness})`;
 
-      // D) Auto font-size / line-height / letter-spacing based on display width
+      // D) Auto typography based on container width
       applyAutoTypography();
       window.addEventListener("resize", applyAutoTypography);
     };
 
     img.onerror = () => {
-      console.log("face.jpg not found. Check filename/case and path.");
+      P.style.color = "#fff";
+      P.style.webkitTextFillColor = "#fff";
+      P.textContent = "face.jpg not found. Check filename/path (case sensitive).";
     };
 
     function applyAutoTypography() {
       const w = P.getBoundingClientRect().width;
 
-      // auto em based on width: big width => smaller em (more detail)
+      // auto em: large width => smaller em (more detail)
       const em = clamp(0.95 - (w / 1000) * 0.55, 0.45, 0.85);
 
       const lh = clamp(em * 0.88, 0.38, 0.75);
@@ -78,15 +80,16 @@
       P.style.letterSpacing = ls.toFixed(3) + "em";
     }
 
+    // center-crop cover draw (so analysis matches your cover rendering)
     function drawCover(ctx, img, w, h) {
       const ir = img.width / img.height;
       const cr = w / h;
 
       let sx = 0, sy = 0, sw = img.width, sh = img.height;
-      if (ir > cr) { // crop left/right
+      if (ir > cr) {
         sw = img.height * cr;
         sx = (img.width - sw) / 2;
-      } else {       // crop top/bottom
+      } else {
         sh = img.width / cr;
         sy = (img.height - sh) / 2;
       }
