@@ -1,47 +1,91 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASCII Portrait</title>
+
 <style>
 body{
   margin:0;
-  background:#000;
+  background:black;
   display:flex;
   justify-content:center;
   align-items:center;
   height:100vh;
+  overflow:hidden;
 }
 
-.container{
-  position:relative;
-  width:400px;
-  height:500px;
-}
-
-.container img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  filter: grayscale(1) contrast(1.2);
-}
-
-.container::after{
-  content:"HTML CSS CODE HTML CSS CODE HTML CSS CODE HTML CSS CODE HTML CSS CODE ";
-  position:absolute;
-  inset:0;
+pre{
+  font-family: monospace;
+  font-size:6px;
+  line-height:6px;
+  letter-spacing:1px;
+  white-space:pre;
   color:#00ff88;
-  font-size:8px;
-  line-height:8px;
-  white-space:pre-wrap;
-  mix-blend-mode:overlay;
-  opacity:0.5;
+  text-shadow:0 0 5px #00ff88;
+}
+
+canvas{
+  display:none;
 }
 </style>
 </head>
+
 <body>
 
-<div class="container">
-  <img src="photo.jpg">
-</div>
+<canvas id="canvas"></canvas>
+<pre id="ascii">Loading...</pre>
+
+<script>
+const img = new Image();
+img.src = "photo.jpg";   // Make sure filename matches exactly
+
+img.onload = () => {
+
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d", { willReadFrequently:true });
+
+  // SAFE resolution (won’t freeze browser)
+  const W = 160;
+  const H = 200;
+
+  canvas.width = W;
+  canvas.height = H;
+
+  ctx.drawImage(img, 0, 0, W, H);
+
+  const imageData = ctx.getImageData(0, 0, W, H);
+  const data = imageData.data;
+
+  const chars = "@%#*+=-:. ";
+  let output = [];
+
+  for(let y = 0; y < H; y++){
+    let row = "";
+    for(let x = 0; x < W; x++){
+
+      const i = (y * W + x) * 4;
+      const r = data[i];
+      const g = data[i+1];
+      const b = data[i+2];
+
+      // brightness calculation
+      const brightness = (0.299*r + 0.587*g + 0.114*b) / 255;
+
+      const charIndex = Math.floor(brightness * (chars.length - 1));
+      row += chars[charIndex];
+    }
+    output.push(row);
+  }
+
+  document.getElementById("ascii").textContent = output.join("\n");
+};
+
+img.onerror = () => {
+  document.getElementById("ascii").textContent = "Image not found. Check filename.";
+};
+</script>
 
 </body>
 </html>
