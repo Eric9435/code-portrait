@@ -18,12 +18,12 @@ section{
 
 /* Text Portrait */
 p{
-  font-size:0.6em;              /* for 5000–10000 words */
-  line-height:0.5em;
-  letter-spacing:-0.09em;
+  font-size:0.5em;              /* for 5000–10000 words */
+  line-height:0.45em;
+  letter-spacing:-0.095em;
 
-  max-width:1400px;            /* landscape max width */
-  width:95%;
+  max-width:512px;            /* landscape max width */
+  width:100%;
   text-align:justify;
 
   /* IMPORTANT: image */
