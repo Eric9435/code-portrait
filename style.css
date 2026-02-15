@@ -1,54 +1,35 @@
-/* Reset */
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:'Poppins', sans-serif;
-}
+*{ margin:0; padding:0; box-sizing:border-box; }
 
-/* Full screen black background */
 section{
-  height:100vh;
+  min-height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
   background:#000;
-  overflow:hidden;
+  padding:16px;
 }
 
-/* Text Portrait */
-p{
-  font-size:0.5em;              /* for 5000–10000 words */
-  line-height:0.45em;
-  letter-spacing:-0.095em;
-
-  max-width:512px;            /* landscape max width */
-  width:100%;
+#portrait{
+  width:min(92vw, 900px);
   text-align:justify;
+  margin:0;
 
-  /* IMPORTANT: image */
-  background-image:url("./face.jpg");
-  background-size:cover;
-  background-position:center 65%;
-  background-repeat:no-repeat;
-  background-attachment:fixed;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  /* IMPORTANT: clipping */
+  background: url("./face.jpg") center/cover no-repeat;
+
   -webkit-background-clip:text;
   background-clip:text;
 
-  /* IMPORTANT: transparency */
   color:transparent;
   -webkit-text-fill-color:transparent;
-
-  filter: contrst(1.6) brightness(0.8);
 }
 
-/* Fallback (if clip not supported) */
 @supports not ((-webkit-background-clip:text) or (background-clip:text)){
-  p{
+  #portrait{
     color:#fff;
     -webkit-text-fill-color:#fff;
     background:none;
+    filter:none;
   }
 }
