@@ -1,3 +1,4 @@
+/* Reset */
 *{
   margin:0;
   padding:0;
@@ -5,6 +6,7 @@
   font-family:'Poppins', sans-serif;
 }
 
+/* Full screen black background */
 section{
   height:100vh;
   display:flex;
@@ -14,24 +16,37 @@ section{
   overflow:hidden;
 }
 
+/* Text Portrait */
 p{
-  font-size: 0.6em;
-  line-height: 0.5em;
-  letter-spacing: -0.09em;
+  font-size:0.6em;              /* for 5000–10000 words */
+  line-height:0.5em;
+  letter-spacing:-0.09em;
 
-  max-width: 1400px;
-  width: 95%;
-  text-align: justify;
+  max-width:1400px;            /* landscape max width */
+  width:95%;
+  text-align:justify;
 
-  background-image: url("face.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  /* IMPORTANT: image */
+  background-image:url("./face.jpg");
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+  background-attachment:fixed;
 
-  -webkit-background-clip: text;
-  background-clip: text;
+  /* IMPORTANT: clipping */
+  -webkit-background-clip:text;
+  background-clip:text;
 
-  color: transparent;
-  -webkit-text-fill-color: transparent; /* IMPORTANT */
+  /* IMPORTANT: transparency */
+  color:transparent;
+  -webkit-text-fill-color:transparent;
+}
+
+/* Fallback (if clip not supported) */
+@supports not ((-webkit-background-clip:text) or (background-clip:text)){
+  p{
+    color:#fff;
+    -webkit-text-fill-color:#fff;
+    background:none;
+  }
 }
